@@ -1,0 +1,51 @@
+FROM php:8.1-rc-apache
+
+RUN groupadd -g 1000 siapi
+RUN useradd -u 1000 -ms /bin/bash -g siapi siapi
+
+WORKDIR .
+
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions && sync
+
+RUN apt update
+RUN apt install -y curl libxml2-dev libzip-dev
+
+RUN docker-php-ext-install pdo xml zip
+RUN docker-php-ext-install bcmath
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+RUN chmod +x /usr/local/bin/composer
+
+COPY . /var/www/html
+COPY --chown=siapi:siapi . /var/www/html/
+
+RUN chmod -R 775 /var/www/html
+
+RUN cd /var/www/html/
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+RUN composer install
+CMD php artisan server --host=0.0.0.0 
+
+ADD . /var/www/html/
+
+# Copy custom configurations PHP
+COPY custom.ini /usr/local/etc/php/conf.d/custom.ini
+
+
+#extras
+RUN chown -R siapi:siapi /var/www/html/
+RUN chmod -R 777 /var/www/html/storage/*
+RUN chmod -R 777 /var/www/html/vendor/composer/*
+
+USER siapi
+
+# Expose port 9000 and start php-fpm server
+EXPOSE 8000
+CMD ["php-fpm"]

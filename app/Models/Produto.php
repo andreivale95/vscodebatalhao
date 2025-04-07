@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Produto extends Model
+{
+    use HasFactory;
+
+    protected $table = 'produtos';
+
+    protected $fillable = [
+        'nome',
+        'descricao',
+        'marca',
+        'valor',
+        'fk_tipo_produto',
+        'ativo',
+
+
+
+    ];
+
+
+    public function condicao()
+    {
+        return $this->hasOne(Condicao::class, 'id', 'fk_condicao');
+    }
+
+
+    public function tipoProduto()
+    {
+        return $this->belongsTo(TipoProduto::class, 'fk_tipo_produto'); // FK para tipo_produto
+    }
+
+    public function kits()
+    {
+        return $this->belongsToMany(Kit::class, 'kit_produto', 'fk_produto', 'fk_kit')
+            ->withPivot('quantidade');
+    }
+
+
+
+
+
+
+
+
+
+}

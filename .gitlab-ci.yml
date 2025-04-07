@@ -1,0 +1,33 @@
+image: debian
+
+before_script:
+  - apt update
+  - apt install openssh-client sshpass -y
+
+stages:
+  - production
+  - develop
+
+production:
+  stage: production
+  script:
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && git pull"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose down"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker tag $IMAGE_NAME:latest $IMAGE_NAME:$NOW
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker build $SERVER_PATH_PROD -t $IMAGE_NAME:latest
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose up -d"
+
+  only:
+    - master
+
+develop:
+  stage: develop
+  script:
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && git pull origin dev"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose down"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker tag $IMAGE_NAME_DEV:latest $IMAGE_NAME_DEV:$NOW
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker build $SERVER_PATH_DEV -t $IMAGE_NAME_DEV:latest
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose up -d"
+
+  only:
+    - dev
