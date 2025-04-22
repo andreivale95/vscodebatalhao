@@ -14,8 +14,6 @@ class TipoProduto extends Model
     protected $fillable = [
         'nome',
         'fk_categoria',
-
-
     ];
 
     public function categoria() {
