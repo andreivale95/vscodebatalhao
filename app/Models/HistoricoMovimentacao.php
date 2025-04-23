@@ -22,6 +22,11 @@ class HistoricoMovimentacao extends Model
         'unidade_origem',
         'unidade_destino',
         'militar',
+        'sei',
+        'data_trp',
+        'fonte',
+        'fornecedor',
+        'nota_fiscal',
 
     ];
 
@@ -44,5 +49,12 @@ class HistoricoMovimentacao extends Model
     {
         return $this->belongsTo(Unidade::class, 'unidade_destino');
     }
+
+
+    public function unidade()
+    {
+        return $this->belongsTo(Unidade::class, 'fk_unidade');
+    }
+
 
 }

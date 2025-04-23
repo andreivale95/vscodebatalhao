@@ -57,16 +57,17 @@ class SaidaEstoqueController extends Controller
 
         // 1. Buscar produtos associados ao militar e que pertencem ao kit selecionado
         $produtosParaSaida = Produto::with('tamanho')
-        ->join('efetivo_militar_produto', 'produtos.id', '=', 'efetivo_militar_produto.fk_produto')
-        ->where('efetivo_militar_produto.entregue', 'NAO')
-        ->where('efetivo_militar_produto.fk_efetivo_militar', $militar->id)
-        ->where('produtos.fk_kit', $kit->id)
-        ->select('produtos.*') // cuidado: só seleciona da tabela produtos
-        ->get();
+            ->join('efetivo_militar_produto', 'produtos.id', '=', 'efetivo_militar_produto.fk_produto')
+            ->where('efetivo_militar_produto.entregue', 'NAO')
+            ->where('efetivo_militar_produto.fk_efetivo_militar', $militar->id)
+            ->where('produtos.fk_kit', $kit->id)
+            ->select('produtos.*') // cuidado: só seleciona da tabela produtos
+            ->get();
 
 
         // 2. Montar a lista de itens com disponibilidade
         $itens = [];
+        $temProdutoDisponivel = false;
 
         foreach ($produtosParaSaida as $produto) {
             $estoque = Itens_estoque::where('fk_produto', $produto->id)->where('unidade', $militar->fk_unidade)->first();
@@ -79,6 +80,9 @@ class SaidaEstoqueController extends Controller
             ];
             $temProdutoDisponivel = collect($itens)->contains(fn($item) => $item['disponivel'] === 'Sim');
 
+        }
+        if (!$temProdutoDisponivel) {
+            return redirect()->back()->with('error', 'Nenhum item do kit está disponível para saída no momento.');
         }
 
 

@@ -53,6 +53,10 @@
                                 <label for="data_entrada">Data de Entrada:</label>
                                 <input type="date" name="data_entrada" class="form-control" required>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label for="data_trp">Data TRP:</label>
+                                <input type="date" name="data_trp" class="form-control">
+                            </div>
 
                             <!-- Lote -->
                             <div class="form-group col-md-4">
@@ -72,11 +76,30 @@
                                 <input type="text" name="fornecedor" class="form-control"
                                     placeholder="Nome do Fornecedor">
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="sei">Número do Processo SEI:</label>
+                                <input type="text" name="sei" class="form-control"
+                                    placeholder="Número do Processo SEI">
+                            </div>
 
                             <!-- Nota Fiscal -->
                             <div class="form-group col-md-3">
                                 <label for="nota_fiscal">Número da Nota Fiscal:</label>
                                 <input type="text" name="nota_fiscal" class="form-control" placeholder="Ex: 00012345">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="fonte">Fonte:</label>
+                                <input type="text" name="fonte" class="form-control" list="fontes" placeholder="">
+                                <datalist id="fontes">
+                                    <option value="SENASP">
+                                    <option value="SEJUSP">
+                                    <option value="VINCI">
+                                    <option value="100">
+                                    <option value="700">
+                                    <option value="DOAÇÃO">
+                                    <option value="FUNDO A FUNDO">
+                                    <option value="OUTROS">
+                                </datalist>
                             </div>
 
                             <!-- Observações -->

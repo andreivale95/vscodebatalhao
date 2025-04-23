@@ -22,6 +22,12 @@ class Itens_estoque extends Model
         'fornecedor',
         'nota_fiscal',
         'observacao',
+        'sei',
+        'data_trp',
+        'fonte',
+
+
+
     ];
 
     public function unidade()

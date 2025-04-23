@@ -76,12 +76,15 @@
                                         <label class="control-label" for="">Kit</label>
                                         <select name="kit" id="" class="form-control" disabled>
                                             <option value="">Selecione</option>
+                                            @if ($kits->isNotEmpty())
                                             @foreach ($kits as $kitt)
                                                 <option value="{{ $kitt->id }}"
-                                                    {{ $kit->id == $kitt->id ? 'selected' : '' }}>
+                                                    {{ isset($kit) && $kit->id == $kitt->id ? 'selected' : '' }}>
                                                     {{ $kitt->nome }}
                                                 </option>
                                             @endforeach
+                                        @endif
+
                                         </select>
                                     </div>
 

@@ -16,7 +16,7 @@
                             @foreach ($produtos as $produto)
                                 <option value="{{ $produto->id }}"
                                     {{ request('produto') == $produto->id ? 'selected' : '' }}>
-                                    {{ $produto->nome }}
+                                    {{ $produto->nome }} - {{ $produto->tamanho()->first()->tamanho }}
                                 </option>
                             @endforeach
                         </select>
@@ -63,24 +63,38 @@
                         <th>Data</th>
                         <th>Produto</th>
                         <th>Tipo</th>
+                        <th>Fornecedor</th>
+                        <th> Nota Fiscal</th>
                         <th>Quantidade</th>
                         <th>Responsável</th>
+                        <th>Estoque</th>
                         <th>Origem</th>
                         <th>Destino</th>
+                        <th>Militar</th>
                         <th>Observação</th>
+                        <th>Processo SEI</th>
+                        <th>Data TRP</th>
+                        <th>Fonte</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($movimentacoes as $m)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($m->data_movimentacao)->format('d/m/Y H:i') }}</td>
-                            <td>{{ $m->produto->nome ?? '—' }}</td>
+                            <td>{{ $m->produto->nome ?? '—' }} - {{ $m->produto()->first()->tamanho()->first()->tamanho }}</td>
                             <td>{{ ucfirst($m->tipo_movimentacao) }}</td>
+                            <td>{{ $m->fornecedor }}</td>
+                            <td>{{ $m->nota_fiscal }}</td>
                             <td>{{ $m->quantidade }}</td>
                             <td>{{ $m->responsavel }}</td>
+                            <td>{{ $m->unidade->nome }}</td>
                             <td>{{ $m->origem->nome ?? '-' }}</td>
                             <td>{{ $m->destino->nome ?? '-' }}</td>
+                            <td>{{ $m->militar }}</td>
                             <td>{{ $m->observacao }}</td>
+                            <td>{{ $m->sei }}</td>
+                            <td>{{ $m->data_trp }}</td>
+                            <td>{{ $m->fonte }}</td>
                         </tr>
                     @empty
                         <tr>

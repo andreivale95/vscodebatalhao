@@ -118,7 +118,7 @@ class EstoqueController extends Controller
         return redirect()->route('estoque.listar')->with('success', 'Produto transferido com sucesso!');
     }
     public function entradaEstoque(Request $request)
-    {
+    { //dd($request->all());
 
 
         try {
@@ -150,6 +150,9 @@ class EstoqueController extends Controller
                     'fornecedor' => $request->fornecedor,
                     'nota_fiscal' => $request->nota_fiscal,
                     'observacao' => $request->observacao ?? 'Entrada de novo produto',
+                    'fonte' => $request->fonte,
+                    'data_trp' => $request->data_trp,
+                    'sei' => $request->sei,
                 ])->save();
 
             }
@@ -162,6 +165,12 @@ class EstoqueController extends Controller
                 'observacao' => 'Entrada de novo produto',
                 'data_movimentacao' => $dataEntrada,
                 'fk_unidade' => $request->unidade,
+                'fonte' => $request->fonte,
+                'data_trp' => $request->data_trp,
+                'sei' => $request->sei,
+                'fornecedor' => $request->fornecedor,
+                'nota_fiscal' => $request->nota_fiscal,
+
             ])->save();
 
 
@@ -173,8 +182,8 @@ class EstoqueController extends Controller
         }
     }
     public function entradaProdutoEstoque(Request $request)
-    {
-        // dd($request->all());
+    {  //dd($request->all());
+
         try {
             // Validação dos dados
             $request->validate([
@@ -201,6 +210,9 @@ class EstoqueController extends Controller
                 'fornecedor' => $request->fornecedor,
                 'nota_fiscal' => $request->nota_fiscal,
                 'observacao' => $request->observacao ?? 'Entrada de novo produto',
+                'fonte' => $request->fonte,
+                'data_trp' => $request->data_trp,
+                'sei' => $request->sei,
             ]);
 
             // Registrar no histórico
@@ -212,6 +224,12 @@ class EstoqueController extends Controller
                 'observacao' => 'Entrada de novo produto',
                 'data_movimentacao' => now(),
                 'fk_unidade' => $request->unidade,
+                'fonte' => $request->fonte,
+                'data_trp' => $request->data_trp,
+                'sei' => $request->sei,
+                'fornecedor' => $request->fornecedor,
+                'nota_fiscal' => $request->nota_fiscal,
+
             ]);
 
             return redirect()->route('estoque.listar')->with('success', 'Produto cadastrado no estoque com sucesso!');
@@ -296,7 +314,7 @@ class EstoqueController extends Controller
             $produto = Itens_estoque::select('fk_produto', 'unidade')->where('id', $id)->first();
             $militares = EfetivoMilitar::all();
 
-            return view('estoque/estoque_form_saida', compact('produto','militares'));
+            return view('estoque/estoque_form_saida', compact('produto', 'militares'));
 
 
 
