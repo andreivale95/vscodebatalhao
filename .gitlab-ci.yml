@@ -29,7 +29,7 @@ deploy_production:
     - master  # Esse job só rodará na branch master
   environment:
     name: production
-    url: http://localhost:3010/login  # URL do ambiente de produção
+    url: http://localhost:3010/login  # URL do ambiente de produção teste
 
 # Job de deploy para o ambiente de desenvolvimento
 deploy_develop:
