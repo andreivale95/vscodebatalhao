@@ -1,4 +1,4 @@
-image: debian  # Usa imagem base Debian para executar os jobs
+image: debian
 
 before_script:
   - apt update
@@ -11,18 +11,11 @@ stages:
 production:
   stage: production
   script:
-    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && git pull --no-rebase"
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && git pull"
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose down"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker stop $IMAGE_NAME || true"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker rm -f $IMAGE_NAME || true"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker tag $IMAGE_NAME:latest $IMAGE_NAME:$(date +%Y%m%d%H%M%S)"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker build $SERVER_PATH_PROD -t $IMAGE_NAME:latest"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker tag $IMAGE_NAME:latest $IMAGE_NAME:$NOW
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker build $SERVER_PATH_PROD -t $IMAGE_NAME:latest
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose up -d"
-
-    # Roda composer install e key:generate após subir o container
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec sisalmox composer install --no-interaction --prefer-dist"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec sisalmox php artisan key:generate"
-
 
   only:
     - master
@@ -30,17 +23,11 @@ production:
 develop:
   stage: develop
   script:
-    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && git pull origin dev --no-rebase"
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && git pull origin dev"
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose down"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker stop $IMAGE_NAME_DEV || true"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker rm -f $IMAGE_NAME_DEV || true"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker tag $IMAGE_NAME_DEV:latest $IMAGE_NAME_DEV:$(date +%Y%m%d%H%M%S)"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker build $SERVER_PATH_DEV -t $IMAGE_NAME_DEV:latest"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker tag $IMAGE_NAME_DEV:latest $IMAGE_NAME_DEV:$NOW
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker build $SERVER_PATH_DEV -t $IMAGE_NAME_DEV:latest
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose up -d"
-
-    # Roda composer install e key:generate para ambiente dev
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME_DEV composer install --no-interaction --prefer-dist"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME_DEV php artisan key:generate"
 
   only:
     - dev
