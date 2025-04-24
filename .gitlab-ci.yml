@@ -1,45 +1,29 @@
 image: debian
 
 before_script:
-  - apt update
-  - apt install openssh-client sshpass -y
+  - apt update && apt install -y openssh-client sshpass  # Instalar os clientes SSH e sshpass
 
 stages:
-  - build
   - deploy
 
-# Job para construir a imagem Docker e rodar o container
-build:
-  stage: build
-  script:
-    - echo "🚧 Iniciando o build da imagem Docker..."
-    - docker build -t sisalmox .
-  only:
-    - master
-    - dev
-
-# Job de deploy para o ambiente de produção
 deploy_production:
   stage: deploy
   script:
-    - echo "🚀 Iniciando o deploy para produção..."
-    - export SERVER_PATH=$SERVER_PATH_PROD  # Variável de ambiente para a pasta de produção
-    - bash ./rebuild_sisalmox.sh
+    - echo "🚀 Conectando ao servidor de produção e rodando o script de deploy..."
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && bash ./rebuild_sisalmox.sh"
   only:
-    - master  # Esse job só rodará na branch master
+    - master
   environment:
     name: production
-    url: http://localhost:3010/login  # URL do ambiente de produção teste
+    url: http://localhost:3010/login
 
-# Job de deploy para o ambiente de desenvolvimento
 deploy_develop:
   stage: deploy
   script:
-    - echo "🚀 Iniciando o deploy para desenvolvimento..."
-    - export SERVER_PATH=$SERVER_PATH_DEV  # Variável de ambiente para a pasta de desenvolvimento
-    - bash ./rebuild_sisalmox.sh
+    - echo "🚀 Conectando ao servidor de desenvolvimento e rodando o script de deploy..."
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_DEV "cd $SERVER_PATH_DEV && bash ./rebuild_sisalmox.sh"
   only:
-    - dev  # Esse job só rodará na branch dev
+    - dev
   environment:
     name: development
-    url: http://localhost:3010/login  # URL do ambiente de desenvolvimento
+    url: http://localhost:3010/login
