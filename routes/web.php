@@ -72,7 +72,7 @@ Route::middleware(['auth', 'verified'])->controller(ProdutoController::class)->g
     Route::post('registros/produto/atualizar/{id}', 'atualizarProduto')->name('produto.atualizar');
     Route::get('/api/produtos/unidade/{unidade}', [ProdutoController::class, 'getProdutosPorUnidade']);
 
-});
+}); //teste
 
 
 Route::middleware(['auth', 'verified'])->controller(UnidadeController::class)->group(function () {
@@ -92,7 +92,6 @@ Route::middleware(['auth', 'verified'])->controller(UserController::class)->grou
     Route::get('user/interno/ver/{id}', 'verUserInterno')->name('usi.ver');
     Route::get('user/interno/editar/{id}', 'editarUserInterno')->name('usi.editar');
     Route::post('user/interno/atualizar/{id}', 'atualizarUserInterno')->name('usi.atualizar');
-
 
 });
 
