@@ -12,16 +12,16 @@ production:
   stage: production
   script:
     # Conecta via SSH no servidor de produção e faz git pull no diretório da aplicação
-    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && git pull"
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && git pull --no-rebase"
 
     # Entra no diretório do projeto e derruba os containers existentes
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose down"
 
-    # Tagueia a imagem atual com o timestamp da execução
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker tag $IMAGE_NAME:latest $IMAGE_NAME:$NOW
+    # Tagueia a imagem atual com o timestamp diretamente no comando
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker tag $IMAGE_NAME:latest $IMAGE_NAME:$(date +%Y%m%d%H%M%S)"
 
     # Rebuilda a imagem Docker com a versão mais recente do código
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker build $SERVER_PATH_PROD -t $IMAGE_NAME:latest
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker build $SERVER_PATH_PROD -t $IMAGE_NAME:latest"
 
     # Sobe os containers atualizados em background
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose up -d"
@@ -33,16 +33,16 @@ develop:
   stage: develop
   script:
     # Conecta no servidor e puxa atualizações da branch dev
-    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && git pull origin dev"
+    - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && git pull origin dev --no-rebase"
 
     # Para os containers antigos da aplicação de desenvolvimento
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose down"
 
-    # Tagueia a imagem dev atual com timestamp
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker tag $IMAGE_NAME_DEV:latest $IMAGE_NAME_DEV:$NOW
+    # Tagueia a imagem dev com o timestamp diretamente
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker tag $IMAGE_NAME_DEV:latest $IMAGE_NAME_DEV:$(date +%Y%m%d%H%M%S)"
 
     # Rebuilda a imagem Docker para o ambiente de desenvolvimento
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD docker build $SERVER_PATH_DEV -t $IMAGE_NAME_DEV:latest
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker build $SERVER_PATH_DEV -t $IMAGE_NAME_DEV:latest"
 
     # Sobe os containers atualizados no ambiente de desenvolvimento
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose up -d"
