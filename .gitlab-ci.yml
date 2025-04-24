@@ -20,8 +20,9 @@ production:
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose up -d"
 
     # Roda composer install e key:generate após subir o container
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME composer install --no-interaction --prefer-dist"
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME php artisan key:generate"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec sisalmox composer install --no-interaction --prefer-dist"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec sisalmox php artisan key:generate"
+
 
   only:
     - master
