@@ -1,59 +1,45 @@
 image: debian  # Usa imagem base Debian para executar os jobs
 
 before_script:
-  - apt update  # Atualiza lista de pacotes
-  - apt install openssh-client sshpass -y  # Instala clientes SSH e sshpass para conexões automatizadas
+  - apt update
+  - apt install openssh-client sshpass -y
 
 stages:
-  - production  # Etapa de deploy para produção
-  - develop     # Etapa de deploy para desenvolvimento
+  - production
+  - develop
 
 production:
   stage: production
   script:
-    # Conecta via SSH no servidor de produção e faz git pull no diretório da aplicação
     - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && git pull --no-rebase"
-
-    # Entra no diretório do projeto, derruba os containers existentes e remove o container com o nome em conflito
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose down"
-
-    # Para o container de produção se estiver rodando, antes de removê-lo
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker stop $IMAGE_NAME || true"  # Para o container
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker rm -f $IMAGE_NAME || true"  # Remove o container
-
-    # Tagueia a imagem atual com o timestamp diretamente no comando
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker stop $IMAGE_NAME || true"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker rm -f $IMAGE_NAME || true"
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker tag $IMAGE_NAME:latest $IMAGE_NAME:$(date +%Y%m%d%H%M%S)"
-
-    # Rebuilda a imagem Docker com a versão mais recente do código
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker build $SERVER_PATH_PROD -t $IMAGE_NAME:latest"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose up -d"
 
-    # Sobe os containers atualizados em background
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_PROD && docker-compose up -d" # Sobe os containers em background
+    # Roda composer install e key:generate após subir o container
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME composer install --no-interaction --prefer-dist"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME php artisan key:generate"
 
   only:
-    - master  # Este job só roda quando houver push na branch master
+    - master
 
 develop:
   stage: develop
   script:
-    # Conecta no servidor e puxa atualizações da branch dev
     - sshpass -v -p $SSHPASS ssh -o "StrictHostKeyChecking no" $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && git pull origin dev --no-rebase"
-
-    # Para os containers antigos da aplicação de desenvolvimento e remove o container com o nome em conflito
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose down"
-
-    # Para o container de desenvolvimento se estiver rodando, antes de removê-lo
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker stop $IMAGE_NAME_DEV || true"  # Para o container
-    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker rm -f $IMAGE_NAME_DEV || true"  # Remove o container agora vau
-
-    # Tagueia a imagem dev com o timestamp diretamente
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker stop $IMAGE_NAME_DEV || true"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker rm -f $IMAGE_NAME_DEV || true"
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker tag $IMAGE_NAME_DEV:latest $IMAGE_NAME_DEV:$(date +%Y%m%d%H%M%S)"
-
-    # Rebuilda a imagem Docker para o ambiente de desenvolvimento
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker build $SERVER_PATH_DEV -t $IMAGE_NAME_DEV:latest"
-
-    # Sobe os containers atualizados no ambiente de desenvolvimento
     - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "cd $SERVER_PATH_DEV && docker-compose up -d"
 
+    # Roda composer install e key:generate para ambiente dev
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME_DEV composer install --no-interaction --prefer-dist"
+    - sshpass -v -p $SSHPASS ssh $USERNAME@$SERVER_IP_PROD "docker exec $IMAGE_NAME_DEV php artisan key:generate"
+
   only:
-    - dev  # Este job roda apenas em pushes para a branch dev
+    - dev
