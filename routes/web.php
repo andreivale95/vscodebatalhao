@@ -104,7 +104,7 @@ Route::middleware(['auth', 'verified'])->controller(EfetivoMilitarProdutoControl
     Route::get('/efetivo-produtos/atribuir/{militar}', 'atribuirProdutos')->name('efetivo_produtos.atribuir');
     Route::get('/efetivo-produtos/visualizar/{id}', 'visualizar')->name('efetivo_produtos.visualizar');
 
-});
+}); //teste novo
 
 
 Route::middleware(['auth', 'verified'])->controller(ProfileController::class)->group(function () {
