@@ -103,7 +103,7 @@ class EstoqueController extends Controller
             ]);
         }
 
-        // Registrar no histórico
+          // Registrar no histórico
         HistoricoMovimentacao::create([
             'fk_produto' => $itemAtual->fk_produto,
             'tipo_movimentacao' => 'transferencia',
