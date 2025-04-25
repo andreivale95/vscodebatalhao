@@ -64,16 +64,17 @@
                         <th>Produto</th>
                         <th>Tipo</th>
                         <th>Fornecedor</th>
-                        <th> Nota Fiscal</th>
-                        <th>Quantidade</th>
+                        <th>N.F.</th>
+                        <th>Qtd.</th>
                         <th>Responsável</th>
                         <th>Estoque</th>
                         <th>Origem</th>
                         <th>Destino</th>
                         <th>Militar</th>
+                        <th>Setor</th>
                         <th>Observação</th>
-                        <th>Processo SEI</th>
-                        <th>Data TRP</th>
+                        <th>Proc. SEI</th>
+                        <th>D. TRP</th>
                         <th>Fonte</th>
                     </tr>
                 </thead>
@@ -81,7 +82,8 @@
                     @forelse($movimentacoes as $m)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($m->data_movimentacao)->format('d/m/Y H:i') }}</td>
-                            <td>{{ $m->produto->nome ?? '—' }} - {{ $m->produto()->first()->tamanho()->first()->tamanho }}</td>
+                            <td>{{ $m->produto->nome ?? '—' }} - {{ $m->produto()->first()->tamanho()->first()->tamanho }}
+                            </td>
                             <td>{{ ucfirst($m->tipo_movimentacao) }}</td>
                             <td>{{ $m->fornecedor }}</td>
                             <td>{{ $m->nota_fiscal }}</td>
@@ -91,6 +93,7 @@
                             <td>{{ $m->origem->nome ?? '-' }}</td>
                             <td>{{ $m->destino->nome ?? '-' }}</td>
                             <td>{{ $m->militar }}</td>
+                            <td>{{ $m->setor}}</td>
                             <td>{{ $m->observacao }}</td>
                             <td>{{ $m->sei }}</td>
                             <td>{{ $m->data_trp }}</td>

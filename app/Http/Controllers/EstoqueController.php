@@ -122,6 +122,9 @@ class EstoqueController extends Controller
 
 
         try {
+            if (Auth::user()->fk_unidade != $request->unidade) {
+                return redirect()->back()->with('error', 'Você não tem permissão para movimentar produtos de outra unidade.');
+            }
 
 
             // Validação dos dados
@@ -185,6 +188,9 @@ class EstoqueController extends Controller
     {  //dd($request->all());
 
         try {
+            if (Auth::user()->fk_unidade != $request->unidade) {
+                return redirect()->back()->with('error', 'Você não tem permissão para movimentar produtos de outra unidade.');
+            }
             // Validação dos dados
             $request->validate([
                 'quantidade' => 'required|integer|min:1',
@@ -241,6 +247,10 @@ class EstoqueController extends Controller
     public function saidaEstoque(Request $request)
     {
         try {
+            if (Auth::user()->fk_unidade != $request->unidade) {
+                return redirect()->back()->with('error', 'Você não tem permissão para movimentar produtos de outra unidade.');
+            }
+
             // Validação dos dados
             $request->validate([
                 'quantidade' => 'required|integer|min:1',
@@ -273,6 +283,7 @@ class EstoqueController extends Controller
                         'data_movimentacao' => $dataSaida,
                         'fk_unidade' => $request->unidade,
                         'militar' => $militar->nome,
+                        'setor' => $request->setor ?? 'Setor não informado',
                     ]);
 
 

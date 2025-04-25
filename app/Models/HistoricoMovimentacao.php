@@ -26,6 +26,7 @@ class HistoricoMovimentacao extends Model
         'data_trp',
         'fonte',
         'fornecedor',
+        'setor',
         'nota_fiscal',
 
     ];

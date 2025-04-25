@@ -89,7 +89,8 @@
                                 <tr>
                                     <td>
                                         <a href="{{ route('produto.ver', $estoque->fk_produto) }}">
-                                            {{ $estoque->produto()->first()->nome }} -  {{ $estoque->produto()->first()->tamanho()->first()->tamanho }}
+                                            {{ $estoque->produto()->first()->nome }} -
+                                            {{ $estoque->produto()->first()->tamanho()->first()->tamanho }}
                                         </a>
                                     </td>
                                     <td>{{ $estoque->quantidade }}</td>
@@ -99,21 +100,30 @@
                                     <td>R$ {{ number_format($valorUnitario, 2, ',', '.') }}</td>
                                     <td>R$ {{ number_format($subtotal, 2, ',', '.') }}</td>
                                     <td>
-                                        <a class="btn btn-primary" href="{{ route('entrada.form', $estoque->id) }}"
-                                            style="color: white">
-                                            <i class="fa fa-plus"></i>
-                                        </a>
-                                        <a class="btn btn-danger" href="{{ route('saida.form', $estoque->id) }}"
-                                            style="color: white">
-                                            <i class="fa fa-minus"></i>
-                                        </a>
+                                        @if (Auth::user()->fk_unidade == $estoque->unidade()->first()->id)
+                                            <a class="btn btn-primary" href="{{ route('entrada.form', $estoque->id) }}"
+                                                style="color: white">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                            <a class="btn btn-danger" href="{{ route('saida.form', $estoque->id) }}"
+                                                style="color: white">
+                                                <i class="fa fa-minus"></i>
+                                            </a>
+                                        @else
+                                            <span class="text-muted">Acesso restrito</span>
+                                        @endif
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-warning" data-toggle="modal"
-                                            data-target="#modalTransferencia{{ $estoque->id }}">
-                                            <i class="fa fa-exchange-alt"></i>
-                                        </button>
+                                        @if (Auth::user()->fk_unidade == $estoque->unidade()->first()->id)
+                                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                                data-target="#modalTransferencia{{ $estoque->id }}">
+                                                <i class="fa fa-exchange-alt"></i>
+                                            </button>
+                                        @else
+                                            <span class="text-muted">Acesso restrito</span>
+                                        @endif
                                     </td>
+
                                 </tr>
 
                                 <!-- Modal de Transferência -->
@@ -136,7 +146,8 @@
 
                                                 <div class="modal-body">
                                                     <p><strong>Produto:</strong> {{ $estoque->produto->nome }}</p>
-                                                    <p><strong>Unidade atual:</strong> {{ $estoque->unidade()->first()->nome ?? 'Não definida' }}</p>
+                                                    <p><strong>Unidade atual:</strong>
+                                                        {{ $estoque->unidade()->first()->nome ?? 'Não definida' }}</p>
 
                                                     <div class="form-group">
                                                         <label for="nova_unidade">Nova Unidade:</label>
@@ -144,7 +155,8 @@
                                                             <option value="">Selecione</option>
                                                             @foreach ($unidades as $unidade)
                                                                 @if ($unidade->id != $estoque->fk_unidade)
-                                                                    <option value="{{ $unidade->id }}">{{ $unidade->nome }}</option>
+                                                                    <option value="{{ $unidade->id }}">
+                                                                        {{ $unidade->nome }}</option>
                                                                 @endif
                                                             @endforeach
                                                         </select>
@@ -164,14 +176,15 @@
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-success">Confirmar Transferência</button>
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-success">Confirmar
+                                                        Transferência</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Cancelar</button>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
-
                             @endforeach
                         </tbody>
                         <tfoot>

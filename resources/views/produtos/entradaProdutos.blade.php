@@ -26,12 +26,8 @@
                             <!-- Unidade -->
                             <div class="form-group col-md-4">
                                 <label for="unidade">Unidade:</label>
-                                <select name="unidade" class="form-control" required>
-                                    <option value="">Selecione a Unidade</option>
-                                    @foreach ($unidades as $unidade)
-                                        <option value="{{ $unidade->id }}">{{ $unidade->nome }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" value="{{ Auth::user()->unidade->nome }}" class="form-control" disabled>
+                                <input type="hidden" name="unidade" value="{{ Auth::user()->fk_unidade }}">
                             </div>
 
                             <!-- Produto -->

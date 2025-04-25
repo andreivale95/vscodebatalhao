@@ -4,7 +4,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Saída <b> {{ $produto->produto()->first()->nome ?? '' }} - {{$produto->produto()->first()->tamanho()->first()->tamanho}} </b> no Estoque. <br>
+                Saída <b> {{ $produto->produto()->first()->nome ?? '' }} -
+                    {{ $produto->produto()->first()->tamanho()->first()->tamanho }} </b> no Estoque. <br>
                 <small>Unidade: {{ $produto->unidade()->first()->nome }}</small>
 
             </h1>
@@ -34,7 +35,8 @@
                             <div class="form-group col-md-4">
                                 <label for="fk_produto">Produto:</label>
                                 <input type="text" class="form-control"
-                                    value="{{ $produto->produto()->first()->nome ?? '' }} - {{$produto->produto()->first()->tamanho()->first()->tamanho}}" disabled>
+                                    value="{{ $produto->produto()->first()->nome ?? '' }} - {{ $produto->produto()->first()->tamanho()->first()->tamanho }}"
+                                    disabled>
                             </div>
                             <div>
                                 <!-- Campo oculto com o ID do produto (será enviado no form) -->
@@ -48,8 +50,8 @@
                             </div>
 
 
-                               <!-- Data de Saída -->
-                               <div class="form-group col-md-4">
+                            <!-- Data de Saída -->
+                            <div class="form-group col-md-4">
                                 <label for="data_entrada">Data de Saída:</label>
                                 <input type="datetime-local" name="data_saida" class="form-control" required>
 
@@ -66,11 +68,30 @@
                                 <label for="militar">Entregue para o Militar:</label>
                                 <select name="militar" class="form-control select2" required>
                                     <option value="">Selecione </option>
-                                    @foreach($militares as $militar)
+                                    @foreach ($militares as $militar)
                                         <option value="{{ $militar->id }}">{{ $militar->nome }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            @if (auth()->user()->unidade()->first()->id == 14)
+                                <div class="form-group col-md-3">
+                                    <label for="setor">Setor:</label>
+                                    <input type="text" name="setor" class="form-control" list="setores" placeholder="">
+                                    <datalist id="setores">
+                                        <option value="AJUDÂNCIA">
+                                        <option value="CORREGEDORIA">
+                                        <option value="JURIDICO">
+                                        <option value="DTI">
+                                        <option value="DLPF">
+                                        <option value="CONTRATOS">
+                                        <option value="DRH">
+                                        <option value="DPLAN">
+                                        <option value="CONTROLADORIA">
+                                        <option value="DIVFIN">
+                                    </datalist>
+                                </div>
+                            @endif
+
 
 
 
@@ -112,13 +133,13 @@
         });
     </script>
 
-<script>
-    $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Selecione um Militar",
-            allowClear: true,
-            width: '100%'
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Selecione um Militar",
+                allowClear: true,
+                width: '100%'
+            });
         });
-    });
-</script>
+    </script>
 @endsection
