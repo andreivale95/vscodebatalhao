@@ -106,7 +106,7 @@
                             <td>{{ $m->produto->nome ?? '—' }} -
                                 {{ optional($m->produto()->first()?->tamanho()->first())->tamanho ?? 'Tamanho Único' }}
                             </td>
-                            <td>{{ ucfirst($m->tipo_movimentacao) }}</td>
+                            <td>{{ $m->tipo_movimentacao }}</td>
                             <td>{{ $m->fornecedor }}</td>
                             <td>{{ $m->nota_fiscal }}</td>
                             <td>{{ $m->quantidade }}</td>

@@ -23,7 +23,12 @@ class MovimentacaoController extends Controller
 
     public function index(Request $request)
     {
-        $query = HistoricoMovimentacao::with(['produto', 'origem', 'destino'])->where('fk_unidade', Auth::user()->fk_unidade);
+        $query = HistoricoMovimentacao::with(['produto', 'origem', 'destino'])
+            ->where(function ($query) {
+                $query->where('unidade_origem', Auth::user()->fk_unidade)
+                    ->orWhereNull('unidade_origem');
+            });
+
 
         if ($request->filled('produto')) {
             $query->where('fk_produto', $request->produto);
@@ -69,16 +74,4 @@ class MovimentacaoController extends Controller
 
         return view('movimentacoes.index', compact('movimentacoes', 'produtos'));
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
