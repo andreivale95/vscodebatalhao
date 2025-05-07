@@ -55,6 +55,9 @@
                             <li><a href="{{ route('kits.listar') }}">Listar Kits</a></li>
                         @endcan
                         @can('autorizacao', 3)
+                        <li><a href="{{ route('categorias.listar') }}">Listar Categorias</a></li>
+                    @endcan
+                        @can('autorizacao', 3)
                             <li><a href="{{ route('unidades.listar') }}">Listar Unidades</a></li>
                         @endcan
 

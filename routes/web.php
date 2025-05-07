@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\EstoqueController;
 
+use App\Models\Categoria;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SaidaEstoqueController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\UnidadeController;
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MovimentacaoController;
 
 Route::get('/movimentacoes', [MovimentacaoController::class, 'index'])->name('movimentacoes.index');
@@ -86,6 +88,18 @@ Route::middleware(['auth', 'verified'])->controller(UnidadeController::class)->g
     Route::get('unidades/editar/{id}', 'editarUnidade')->name('unidade.editar');
     Route::get('unidades/ver/{id}', 'verUnidade')->name('unidade.ver');
     Route::post('unidades/atualizar/{id}', 'atualizarUnidade')->name('unidade.atualizar');
+});
+
+
+Route::middleware(['auth', 'verified'])->controller(CategoriaController::class)->group(function () {
+
+    Route::get('categorias/listar', 'listarCategoria')->name('categorias.listar');
+    Route::get('categorias/form', 'categoriaForm')->name('categoria.form');
+    Route::post('categorias/criar', 'cadastrarCategoria')->name('categoria.cadastrar');
+    Route::get('categorias/editar/{id}', 'editarCategoria')->name('categoria.editar');
+    Route::get('categorias/ver/{id}', 'verCategoria')->name('categoria.ver');
+    Route::post('categorias/atualizar/{id}', 'atualizarCategoria')->name('categoria.atualizar');
+    Route::delete('categorias/atualizar/{id}', 'excluirCategoria')->name('categoria.excluir');
 });
 
 Route::middleware(['auth', 'verified'])->controller(UserController::class)->group(function () {

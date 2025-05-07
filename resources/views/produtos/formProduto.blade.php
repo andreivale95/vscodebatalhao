@@ -57,6 +57,8 @@
                                                 <option value="UN">UN</option>
                                                 <option value="CX">CX</option>
                                                 <option value="PCT">PCT</option>
+                                                <option value="kG">KG</option>
+                                                <option value="LT">LT</option>
 
 
                                             </select>
