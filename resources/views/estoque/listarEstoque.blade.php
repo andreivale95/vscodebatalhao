@@ -206,6 +206,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                      {{ $itens_estoque->links() }}
                 </div>
 
                 <div class="box-footer">
