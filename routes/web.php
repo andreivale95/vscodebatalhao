@@ -19,6 +19,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MovimentacaoController;
 
 Route::get('/movimentacoes', [MovimentacaoController::class, 'index'])->name('movimentacoes.index');
+Route::put('movimentacoes/desfazer/{id}', [MovimentacaoController::class, 'desfazer'])->name('movimentacao.desfazer');
+
 
 
 

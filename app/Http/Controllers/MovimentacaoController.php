@@ -9,7 +9,8 @@ use App\Models\Unidade;
 use App\Models\Produto;
 use App\Models\Kit;
 use App\Models\KitProduto;
-
+use App\Models\Estoque;
+use Illuminate\Support\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,5 +74,85 @@ class MovimentacaoController extends Controller
         $produtos = Produto::all();
 
         return view('movimentacoes.index', compact('movimentacoes', 'produtos'));
+    }
+
+
+    public function desfazer($id)
+    {
+        try {
+            // Buscar a movimentação
+            $movimentacao = HistoricoMovimentacao::findOrFail($id);
+
+            // Verificar o tipo de movimentação
+            $tipoMovimentacao = $movimentacao->tipo_movimentacao;
+
+            // Buscar o item no estoque
+            $itemEstoque = Itens_estoque::where('fk_produto', $movimentacao->fk_produto)
+                ->where('unidade', $movimentacao->fk_unidade)
+                ->first();
+
+            if (!$itemEstoque) {
+                return back()->with('error', 'Produto não encontrado no estoque.');
+            }
+
+            // Se for uma saída, devolve a quantidade ao estoque
+            if ($tipoMovimentacao === 'saida') {
+                $itemEstoque->quantidade += $movimentacao->quantidade;
+            }
+
+            // Se for uma entrada, retira a quantidade do estoque
+            if ($tipoMovimentacao === 'entrada') {
+                $itemEstoque->quantidade -= $movimentacao->quantidade;
+            }
+
+            // Se for uma transferência, a lógica pode ser diferente dependendo da origem e destino
+            if ($tipoMovimentacao === 'transferencia') {
+                if ($movimentacao->origem) {
+                    $itemEstoqueOrigem = Itens_estoque::where('fk_produto', $movimentacao->fk_produto)
+                        ->where('unidade', $movimentacao->origem->id)
+                        ->first();
+                    if ($itemEstoqueOrigem) {
+                        $itemEstoqueOrigem->quantidade += $movimentacao->quantidade;
+                        $itemEstoqueOrigem->save();
+                    }
+                }
+
+                if ($movimentacao->destino) {
+                    $itemEstoqueDestino = Itens_estoque::where('fk_produto', $movimentacao->fk_produto)
+                        ->where('unidade', $movimentacao->destino->id)
+                        ->first();
+                    if ($itemEstoqueDestino) {
+                        $itemEstoqueDestino->quantidade -= $movimentacao->quantidade;
+                        $itemEstoqueDestino->save();
+                    }
+                }
+            }
+
+            // Salvar as alterações no estoque
+            $itemEstoque->save();
+
+            // Criar uma nova movimentação de reversão no histórico
+            HistoricoMovimentacao::create([
+                'fk_produto' => $movimentacao->fk_produto,
+                'tipo_movimentacao' => $tipoMovimentacao === 'entrada' ? 'saida' : 'entrada', // Inverter o tipo
+                'quantidade' => $movimentacao->quantidade,
+                'valor_total' => $movimentacao->valor_total,
+                'valor_unitario' => $movimentacao->valor_unitario,
+                'responsavel' => Auth::user()->nome,
+                'observacao' => 'Desfeito movimentação de ' . $tipoMovimentacao,
+                'data_movimentacao' => Carbon::now(),
+                'fk_unidade' => $movimentacao->fk_unidade,
+                'fonte' => $movimentacao->fonte,
+                'data_trp' => $movimentacao->data_trp,
+                'sei' => $movimentacao->sei,
+                'fornecedor' => $movimentacao->fornecedor,
+                'nota_fiscal' => $movimentacao->nota_fiscal,
+            ]);
+
+            return back()->with('success', 'Movimentação desfeita com sucesso!');
+        } catch (\Exception $e) {
+            Log::error('Erro ao desfazer a movimentação', ['exception' => $e->getMessage()]);
+            return back()->with('error', 'Houve um erro ao desfazer a movimentação.');
+        }
     }
 }
