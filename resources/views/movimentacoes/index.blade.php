@@ -126,11 +126,10 @@
                     <td>{{ $m->fonte }}</td>
                     <td>{{ $m->observacao }}</td>
                     <td>
-                      
-                        <form action="{{ route('movimentacao.desfazer', $m->id) }}" method="POST">
+                        <form action="{{ route('movimentacao.desfazer', $m->id) }}" method="POST" class="form-desfazer">
                             @csrf
                             @method('PUT')
-                            <button type="submit" class="btn btn-warning btn-sm">Desfazer</button>
+                            <button type="button" class="btn btn-warning btn-sm btn-confirm-desfazer" data-id="{{ $m->id }}">Desfazer</button>
                         </form>
                     </td>
                 </tr>
@@ -146,12 +145,46 @@
     </section>
 </div>
 
+<!-- Modal de confirmação -->
+<div class="modal fade" id="modalConfirmDesfazer" tabindex="-1" role="dialog" aria-labelledby="modalConfirmDesfazerLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalConfirmDesfazerLabel">Confirmar Desfazer Movimentação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Tem certeza que deseja desfazer esta movimentação? Esta ação não pode ser desfeita.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" id="btnModalConfirmarDesfazer">Desfazer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+    let formDesfazerSelecionado = null;
     $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Selecione um Produto",
             allowClear: true,
             width: '100%'
+        });
+
+        // Modal de confirmação para desfazer
+        $('.btn-confirm-desfazer').on('click', function(e) {
+            e.preventDefault();
+            formDesfazerSelecionado = $(this).closest('form');
+            $('#modalConfirmDesfazer').modal('show');
+        });
+        $('#btnModalConfirmarDesfazer').on('click', function() {
+            if (formDesfazerSelecionado) {
+                formDesfazerSelecionado.submit();
+            }
         });
     });
 </script>
