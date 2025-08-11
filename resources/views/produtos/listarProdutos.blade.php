@@ -57,9 +57,9 @@
                             </select>
                         </div>
 
-                        <div class="form-group has-feedback col-md-1 pull-right">
+                        <div class="form-group has-feedback col-md-1 pull-right" style="position: relative; left: -130px;">
                             <label class="control-label" for="">&nbsp;</label>
-                            <div class="input-group" style="width: 220px;">
+                            <div class="input-group" style="width: 320px;">
                                 <a href="{{ route('produtos.listar') }}" class="btn btn-danger" style="margin-right:5px;"><i class="fa fa-eraser"></i> Limpar Filtros</a>
                                 <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Pesquisar</button>
                             </div>
