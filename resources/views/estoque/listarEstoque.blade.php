@@ -243,7 +243,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="data_saida">Data de Saída:</label>
-                                    <input type="date" name="data_saida" class="form-control" required>
+                                    <input type="datetime-local" name="data_saida" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="observacao">Observação:</label>

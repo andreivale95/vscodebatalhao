@@ -104,7 +104,7 @@
             <tbody>
                 @forelse($movimentacoes as $m)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($m->data_movimentacao)->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($m->data_movimentacao)->format('d/m/Y H:i:s') }}</td>
                     <td>{{ $m->produto->nome ?? '—' }} -
                         {{ optional($m->produto()->first()?->tamanho()->first())->tamanho ?? 'Tamanho Único' }}
                     </td>

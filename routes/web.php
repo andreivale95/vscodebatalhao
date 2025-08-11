@@ -100,7 +100,7 @@ Route::middleware(['auth', 'verified'])->controller(CategoriaController::class)-
     Route::get('categorias/editar/{id}', 'editarCategoria')->name('categoria.editar');
     Route::get('categorias/ver/{id}', 'verCategoria')->name('categoria.ver');
     Route::post('categorias/atualizar/{id}', 'atualizarCategoria')->name('categoria.atualizar');
-    Route::delete('categorias/atualizar/{id}', 'excluirCategoria')->name('categoria.excluir');
+    Route::post('categorias/excluir/{id}', 'excluirCategoria')->name('categoria.excluir');
 });
 
 Route::middleware(['auth', 'verified'])->controller(UserController::class)->group(function () {

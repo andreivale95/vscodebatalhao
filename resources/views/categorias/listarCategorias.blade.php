@@ -49,10 +49,13 @@
                                         <a class="btn btn-primary" href="{{ route('categoria.ver', $categoria->id) }}"
                                             style="color: white">
                                             <i class="fa fa-television"></i></a>
-                                        <a class="btn btn-danger" href="{{ route('categoria.excluir', $categoria->id) }}"
-                                            style="color: white" onclick="return confirm('Deseja realmente excluir?')">
-                                            <i class="fa fa-trash"></i></a>
-                                    </td>
+                                        <form action="{{ route('categoria.excluir', $categoria->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            
+                                            <button type="submit" class="btn btn-danger" style="color: white" onclick="return confirm('Deseja realmente excluir?')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
                                 </tr>
                             @endforeach
 
