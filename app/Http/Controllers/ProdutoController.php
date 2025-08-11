@@ -72,6 +72,7 @@ class ProdutoController extends Controller
         $request['categoria'] = empty($request['categoria']) ? '' : $request->get('categoria');
         $request['marca'] = empty($request['marca']) ? '' : $request->get('marca');
 
+
         $sort = $request->get('sort', 'nome');
         $direction = $request->get('direction', 'asc');
 
@@ -79,9 +80,12 @@ class ProdutoController extends Controller
             'nome', 'patrimonio', 'descricao', 'marca', 'categoria', 'unidade', 'valor'
         ];
 
+        $patrimonio = $request->get('patrimonio', '');
+
         try {
             $categorias = Categoria::all();
             $todasMarcas = Produto::select('marca')->distinct()->pluck('marca');
+
 
             $produtos = Produto::query()
                 ->when(filled($request->get('categoria')), function (Builder $query) use ($request) {
@@ -94,6 +98,9 @@ class ProdutoController extends Controller
                 })
                 ->when(filled($request->get('nome')), function (Builder $query) use ($request) {
                     return $query->where('nome', 'like', '%' . $request->get('nome') . '%');
+                })
+                ->when(filled($patrimonio), function (Builder $query) use ($patrimonio) {
+                    return $query->where('patrimonio', 'like', '%' . $patrimonio . '%');
                 })
                 ->when(in_array($sort, $sortable), function (Builder $query) use ($sort, $direction) {
                     if ($sort === 'categoria') {
