@@ -4,13 +4,13 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Cadastro de Unidade
+                Cadastro de categoria
 
             </h1>
             <ol class="breadcrumb">
                 <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li><a href="{{ route('unidades.listar') }}"><i class=""></i> Unidades</a></li>
-                <li></i> Cadastro de Unidade</li>
+                <li><a href="{{ route('categorias.listar') }}"><i class=""></i> Categorias</a></li>
+                <li></i> Cadastro de Categoria</li>
 
             </ol>
         </section>
@@ -24,7 +24,7 @@
 
                 </div>
                 <div class="panel-body" style="background-color: white;">
-                    <form action="{{ route('unidade.cadastrar') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('categoria.cadastrar') }}" method="post" enctype="multipart/form-data">
                         <div class="row">
 
                             <div class="col-md-6">
@@ -33,19 +33,19 @@
 
                                 <div class="box box-primary">
                                     <div class="box-header">
-                                        CADASTRAR UNIDADE
+                                        CADASTRAR CATEGORIA
                                     </div>
                                     <div class="box-body">
                                         <div class="form-group has-feedback col-md-6">
-                                            <label class="control-label" for="">Unidade:</label>
-                                            <input type="text" class="form-control" placeholder="" name="unidade"
+                                            <label class="control-label" for="">Categoria:</label>
+                                            <input type="text" class="form-control" placeholder="" name="nome"
                                                 value="" required>
                                         </div>
 
                                     </div>
                                 </div>
                                 <div class="box-foote pull-right">
-                                    <a href="{{ route('unidades.listar') }}" class="btn btn-danger"><i
+                                    <a href="{{ route('categorias.listar') }}" class="btn btn-danger"><i
                                             class="fa fa-close"></i>
                                         Cancelar</a>
                                     <button class="btn btn-success"><i class="fa fa-save"></i> Cadastrar</button>

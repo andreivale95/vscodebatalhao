@@ -4,12 +4,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                {{ $unidade_id->nome }}
+                {{ $categoria->nome }}
 
             </h1>
             <ol class="breadcrumb">
                 <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li><a href="{{ route('unidades.listar') }}"><i class=""></i> Unidades</a></li>
+                <li><a href="{{ route('categorias.listar') }}"><i class=""></i> categoria</a></li>
 
 
             </ol>
@@ -29,14 +29,14 @@
                     <div class="row">
 
                         <div class="col-md-6">
-                            <form action="{{ route('unidade.atualizar', $unidade_id->id) }}" method="post"
+                            <form action="{{ route('categoria.atualizar', $categoria->id) }}" method="post"
                                 enctype="multipart/form-data">
 
                                 @csrf
 
                                 <div class="box box-primary">
                                     <div class="box-header">
-                                        DADOS DA UNIDADE
+                                        DADOS DA CATEGORIA
 
                                         <!-- Button trigger modal -->
                                     </div>
@@ -47,9 +47,9 @@
 
 
                                         <div class="form-group has-feedback col-md-6">
-                                            <label class="control-label" for="unidade">Unidade:</label>
-                                            <input type="text" name="unidade" class="form-control"
-                                                value="{{ $unidade_id->nome }}" readonly>
+                                            <label class="control-label" for="categoria">Categoria:</label>
+                                            <input type="text" name="categoria" class="form-control"
+                                                value="{{ $categoria->nome }}" readonly>
                                         </div>
 
 
@@ -57,10 +57,10 @@
                                     </div>
                                 </div>
                                 <div class="box-foote pull-right">
-                                    <a href="{{ route('unidades.listar') }}" class="btn btn-danger"><i
+                                    <a href="{{ route('categorias.listar') }}" class="btn btn-danger"><i
                                             class="fa fa-back"></i>
                                         Voltar</a>
-                                    <a class="btn btn-warning" href="{{ route('unidade.editar', $unidade_id) }}"
+                                    <a class="btn btn-warning" href="{{ route('categoria.editar', $categoria) }}"
                                         style="color: white">
                                         <i class="fa fa-edit"></i>Editar</a>
                                 </div>
