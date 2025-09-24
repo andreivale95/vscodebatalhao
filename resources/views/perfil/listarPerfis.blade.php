@@ -41,12 +41,13 @@
                                         <td>Inatino</td>
                                     @endif
                                     <td class="pull-right">
-                                        <a href="{{ route('pf.ver', $perfil->id_perfil) }}" class="btn btn-success"><i
-                                                class="fa fa-desktop"></i></a>
-                                        <a href="{{ route('pf.editar', $perfil->id_perfil) }}" class="btn btn-warning"><i
-                                                class="fa fa-edit"></i></a>
-
-
+                                        <a href="{{ route('pf.ver', $perfil->id_perfil) }}" class="btn btn-success"><i class="fa fa-desktop"></i></a>
+                                        <a href="{{ route('pf.editarForm', $perfil->id_perfil) }}" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                                        <form action="{{ route('pf.excluir', $perfil->id_perfil) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Tem certeza que deseja excluir este perfil?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

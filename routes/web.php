@@ -30,8 +30,9 @@ Route::middleware(['auth', 'verified'])->controller(PerfilController::class)->gr
     Route::post('perfis/atualizar/{id}', 'atualizarPerfil')->name('pf.atualizar');
     Route::get('perfis/form', 'formPerfil')->name('pf.form');
     Route::get('perfis/perfil/{id}', 'verPerfil')->name('pf.ver');
+    Route::get('perfis/editar/{id}', 'editarPerfilForm')->name('pf.editarForm');
     Route::post('perfis/editar/{id}', 'editarPerfil')->name('pf.editar');
-    Route::post('perfis/deletar/{id}', 'deletarPerfil')->name('pf.deletar');
+    Route::delete('perfis/excluir/{id}', 'excluirPerfil')->name('pf.excluir');
 });
 
 Route::middleware(['auth', 'verified'])->controller(EstoqueController::class)->group(function () {

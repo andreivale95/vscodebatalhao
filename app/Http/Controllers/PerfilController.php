@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\DB;
 
 class PerfilController extends Controller
 {
+    public function editarPerfilForm(Request $request, string $id)
+    {
+        $this->authorize('autorizacao', 3);
+        try {
+            $modulos = Modulo::all();
+            $permissoes = Permissao::all();
+            $perfil = Perfil::query()
+                ->where('id_perfil', $id)
+                ->first();
+            return view('perfil/editarPerfil', compact('perfil', 'modulos', 'permissoes'));
+        } catch (Exception $e) {
+            Log::error('Error ao consultar o perfil', [$e]);
+            return back()->with('warning', 'Houve um erro ao consultar o perfil');
+        }
+    }
     public function listarPerfis(Request $request)
     {
 
@@ -168,7 +183,7 @@ class PerfilController extends Controller
         }
     }
 
-    public function deletarPerfil(Request $request, $id)
+    public function excluirPerfil(Request $request, $id)
     {
 
         $this->authorize('autorizacao', 3);
