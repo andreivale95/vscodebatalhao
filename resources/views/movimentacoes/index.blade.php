@@ -126,11 +126,16 @@
                     <td>{{ $m->fonte }}</td>
                     <td>{{ $m->observacao }}</td>
                     <td>
-                        <form action="{{ route('movimentacao.desfazer', $m->id) }}" method="POST" class="form-desfazer">
+                        <form action="{{ route('movimentacao.desfazer', $m->id) }}" method="POST" class="form-desfazer" style="display:inline-block;">
                             @csrf
                             @method('PUT')
-                            <button type="button" class="btn btn-warning btn-sm btn-confirm-desfazer" data-id="{{ $m->id }}">Desfazer</button>
+                            <button type="button" class="btn btn-warning btn-sm btn-confirm-desfazer" data-id="{{ $m->id }}" title="Desfazer movimentação">
+                                Desfazer
+                            </button>
                         </form>
+                        <a href="{{ route('movimentacao.ver', $m->id) }}" class="btn btn-info btn-sm" title="Ver mais informações">
+                            <i class="fa fa-info-circle"></i>
+                        </a>
                     </td>
                 </tr>
                 @empty

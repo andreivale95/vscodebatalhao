@@ -171,4 +171,14 @@ class MovimentacaoController extends Controller
             return back()->with('error', 'Houve um erro ao desfazer a movimentação.');
         }
     }
+    public function ver($id)
+    {
+        try {
+            $movimentacao = HistoricoMovimentacao::with(['produto', 'origem', 'destino', 'unidade'])->findOrFail($id);
+            return view('movimentacoes.ver', compact('movimentacao'));
+        } catch (\Exception $e) {
+            \Log::error('Erro ao consultar movimentação', [$e]);
+            return back()->with('warning', 'Movimentação não encontrada.');
+        }
+    }
 }

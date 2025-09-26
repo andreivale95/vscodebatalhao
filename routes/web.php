@@ -20,6 +20,7 @@ use App\Http\Controllers\MovimentacaoController;
 
 Route::get('/movimentacoes', [MovimentacaoController::class, 'index'])->name('movimentacoes.index');
 Route::put('movimentacoes/desfazer/{id}', [MovimentacaoController::class, 'desfazer'])->name('movimentacao.desfazer');
+Route::get('movimentacoes/ver/{id}', [MovimentacaoController::class, 'ver'])->name('movimentacao.ver');
 
 
 
