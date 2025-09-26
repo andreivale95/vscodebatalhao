@@ -25,8 +25,41 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 
-class ProdutoController extends Controller
-{
+class ProdutoController extends Controller {
+    public function ativarProduto(Request $request, $id)
+    {
+        try {
+            $produto = Produto::find($id);
+            if (!$produto) {
+                return back()->with('warning', 'Produto não encontrado.');
+            }
+            $produto->ativo = 'Y';
+            $produto->save();
+            return redirect()->route('produtos.listar')->with('success', 'Produto reativado com sucesso!');
+        } catch (Exception $e) {
+            Log::error('Erro ao reativar produto', [$e]);
+            return back()->with('warning', 'Erro ao reativar produto.');
+        }
+    }
+    public function excluirProduto(Request $request, $id)
+    {
+        try {
+            $produto = Produto::find($id);
+            if (!$produto) {
+                return back()->with('warning', 'Produto não encontrado.');
+            }
+            $estoque = Itens_estoque::where('fk_produto', $id)->sum('quantidade');
+            if ($estoque > 0) {
+                return back()->with('warning', 'Não é possível inativar: o estoque deste produto não está zerado.');
+            }
+            $produto->ativo = 'N';
+            $produto->save();
+            return redirect()->route('produtos.listar')->with('success', 'Produto inativado com sucesso!');
+        } catch (Exception $e) {
+            Log::error('Erro ao inativar produto', [$e]);
+            return back()->with('warning', 'Erro ao inativar produto.');
+        }
+    }
 
 
 
@@ -88,6 +121,9 @@ class ProdutoController extends Controller
 
 
             $produtos = Produto::query()
+                ->when($request->filled('ativo'), function ($query) use ($request) {
+                    return $query->where('ativo', $request->get('ativo'));
+                })
                 ->when(filled($request->get('categoria')), function (Builder $query) use ($request) {
                     return $query->whereHas('categoria', function ($q) use ($request) {
                         $q->where('nome', 'like', '%' . $request->get('categoria') . '%');
@@ -292,7 +328,6 @@ class ProdutoController extends Controller
                 'unidade' => $request->get('unidade'),
                 'fk_kit' => $request->get('fk_kit'),
                 'fk_categoria' => $request->get('categoria'),
-                'ativo' => 'Y',
             ]);
 
             DB::commit();

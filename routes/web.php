@@ -69,6 +69,8 @@ Route::middleware(['auth', 'verified'])->controller(SaidaEstoqueController::clas
 
 
 Route::middleware(['auth', 'verified'])->controller(ProdutoController::class)->group(function () {
+    Route::post('registros/produto/ativar/{id}', 'ativarProduto')->name('produto.ativar');
+    Route::delete('registros/produto/excluir/{id}', 'excluirProduto')->name('produto.excluir');
     Route::get('registros/produto/listar', 'listarProdutos')->name('produtos.listar');
     Route::get('registros/produto/ver/{id}', 'verProduto')->name('produto.ver');
     Route::get('registros/produto/form', 'formProduto')->name('produto.form');

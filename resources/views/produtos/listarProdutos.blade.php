@@ -21,6 +21,14 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <div class="row">
+                        <div class="form-group has-feedback col-md-2">
+                            <label class="control-label" for="">STATUS:</label>
+                            <select name="ativo" class="form-control">
+                                <option value="">Todos</option>
+                                <option value="Y" {{ request()->ativo == 'Y' ? 'selected' : '' }}>Ativo</option>
+                                <option value="N" {{ request()->ativo == 'N' ? 'selected' : '' }}>Inativo</option>
+                            </select>
+                        </div>
 
                         <div class="form-group has-feedback col-md-2">
                             <label class="control-label" for="">PRODUTO:</label>
@@ -121,7 +129,7 @@
                     <tbody>
 
                         @foreach ($produtos as $produto)
-                        <tr>
+                        <tr @if($produto->ativo == 'N') style="background-color: #f8d7da;" @endif>
                             <td>
                                 <a href="{{ route('produto.ver', $produto->id) }}">
                                     {{ $produto->nome }} -
@@ -139,11 +147,27 @@
                             <td>{{ $produto->valor }}</td>
                             <td>{{ $produto->categoria->nome }}</td>
                             <td> <a class="btn btn-warning" href="{{ route('produto.editar', $produto->id) }}"
-                                    style="color: white">
+                                style="color: white">
                                     <i class="fa fa-edit"></i></a>
                                 <a class="btn btn-primary" href="{{ route('produto.ver', $produto->id) }}"
                                     style="color: white">
                                     <i class="fa fa-television"></i></a>
+                                @if($produto->ativo == 'Y')
+                                    <form action="{{ route('produto.excluir', $produto->id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja inativar este produto?')">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('produto.ativar', $produto->id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success" onclick="return confirm('Deseja reativar este produto?')">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
