@@ -17,6 +17,7 @@ use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MovimentacaoController;
+use App\Http\Controllers\SecaoController;
 
 Route::get('/movimentacoes', [MovimentacaoController::class, 'index'])->name('movimentacoes.index');
 Route::put('movimentacoes/desfazer/{id}', [MovimentacaoController::class, 'desfazer'])->name('movimentacao.desfazer');
@@ -146,3 +147,16 @@ Route::get('/', [SiteController::class, 'Site'])->name('site');
 
 
 require __DIR__ . '/auth.php';
+
+Route::prefix('unidades/{unidade}/secoes')->group(function () {
+    Route::get('/', [SecaoController::class, 'index'])->name('secoes.index');
+    Route::get('/criar', [SecaoController::class, 'create'])->name('secoes.create');
+    Route::post('/criar', [SecaoController::class, 'store'])->name('secoes.store');
+    Route::get('/{id}/editar', [SecaoController::class, 'edit'])->name('secoes.edit');
+    Route::put('/{id}/editar', [SecaoController::class, 'update'])->name('secoes.update');
+    Route::delete('/{id}', [SecaoController::class, 'destroy'])->name('secoes.destroy');
+});
+
+// Rotas independentes para vincular itens a seções
+Route::get('unidades/{unidade}/secoes/{secao}/vincular-itens', [SecaoController::class, 'vincularItensForm'])->name('secoes.vincular_itens_form');
+Route::post('unidades/{unidade}/secoes/{secao}/vincular-itens', [SecaoController::class, 'vincularItens'])->name('secoes.vincular_itens');

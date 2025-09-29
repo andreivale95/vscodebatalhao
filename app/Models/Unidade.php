@@ -13,6 +13,10 @@ class Unidade extends Model
 
     protected $fillable = [
         'nome',
-
     ];
+
+    public function secoes()
+    {
+        return $this->hasMany(Secao::class, 'fk_unidade');
+    }
 }

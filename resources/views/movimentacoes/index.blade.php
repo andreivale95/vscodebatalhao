@@ -72,6 +72,10 @@
                     <label>&nbsp;</label>
                     <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
                 </div>
+                <div class="col-md-1">
+                    <label>&nbsp;</label>
+                    <a href="{{ route('movimentacoes.index') }}" class="btn btn-default btn-block" id="btnLimparFiltro">Limpar filtro</a>
+                </div>
             </div>
         </form>
         <br>
@@ -83,6 +87,7 @@
                         Configurações de Colunas
                     </button>
                     <div class="dropdown-menu" aria-labelledby="configMenu" style="max-height:300px;overflow-y:auto;">
+                        <button type="button" class="btn btn-sm btn-primary mb-2" id="selectAllCols">Selecionar todos</button>
                         <label class="dropdown-item"><input type="checkbox" class="toggle-col" data-col="data" checked> Data</label>
                         <label class="dropdown-item"><input type="checkbox" class="toggle-col" data-col="produto" checked> Produto</label>
                         <label class="dropdown-item"><input type="checkbox" class="toggle-col" data-col="tipo" checked> Tipo</label>
@@ -223,14 +228,41 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Carregar configurações salvas
+        let savedCols = JSON.parse(localStorage.getItem('movCols')) || {};
         document.querySelectorAll('.toggle-col').forEach(function(checkbox) {
+            var col = checkbox.getAttribute('data-col');
+            if (savedCols[col] === false) {
+                checkbox.checked = false;
+                document.querySelectorAll('.col-' + col).forEach(function(cell) {
+                    cell.style.display = 'none';
+                });
+            } else {
+                checkbox.checked = true;
+                document.querySelectorAll('.col-' + col).forEach(function(cell) {
+                    cell.style.display = '';
+                });
+            }
             checkbox.addEventListener('change', function() {
-                var col = this.getAttribute('data-col');
                 var show = this.checked;
+                savedCols[col] = show;
+                localStorage.setItem('movCols', JSON.stringify(savedCols));
                 document.querySelectorAll('.col-' + col).forEach(function(cell) {
                     cell.style.display = show ? '' : 'none';
                 });
             });
+        });
+        // Botão selecionar todos
+        document.getElementById('selectAllCols').addEventListener('click', function() {
+            document.querySelectorAll('.toggle-col').forEach(function(checkbox) {
+                checkbox.checked = true;
+                var col = checkbox.getAttribute('data-col');
+                savedCols[col] = true;
+                document.querySelectorAll('.col-' + col).forEach(function(cell) {
+                    cell.style.display = '';
+                });
+            });
+            localStorage.setItem('movCols', JSON.stringify(savedCols));
         });
     });
 </script>

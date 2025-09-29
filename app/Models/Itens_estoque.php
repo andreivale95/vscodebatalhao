@@ -12,10 +12,10 @@ class Itens_estoque extends Model
     protected $table = 'itens_estoque';
 
     protected $fillable = [
-
         'quantidade',
         'preco_unitario',
         'unidade',
+        'fk_secao',
         'data_entrada',
         'data_saida',
         'fk_produto',
@@ -26,11 +26,11 @@ class Itens_estoque extends Model
         'sei',
         'data_trp',
         'fonte',
-
-
-
     ];
-
+    public function secao()
+    {
+        return $this->belongsTo(Secao::class, 'fk_secao');
+    }
     public function unidade()
     {
         return $this->hasOne(Unidade::class, 'id', 'unidade');

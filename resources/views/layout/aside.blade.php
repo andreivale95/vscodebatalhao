@@ -124,6 +124,17 @@
             <li class="">
                 <a href="{{ route('logout') }}"><i class="glyphicon glyphicon-log-out"></i> <span>Sair</span></a>
             </li>
+            <li class="treeview">
+                <a href="#"><i class="fa fa-building"></i> <span>Seções (Salas)</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('secoes.index', Auth::user()->fk_unidade) }}">Gerenciar Seções da Minha Unidade</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
         <!-- /.sidebar-menu -->
     </section>
