@@ -160,3 +160,5 @@ Route::prefix('unidades/{unidade}/secoes')->group(function () {
 // Rotas independentes para vincular itens a seções
 Route::get('unidades/{unidade}/secoes/{secao}/vincular-itens', [SecaoController::class, 'vincularItensForm'])->name('secoes.vincular_itens_form');
 Route::post('unidades/{unidade}/secoes/{secao}/vincular-itens', [SecaoController::class, 'vincularItens'])->name('secoes.vincular_itens');
+Route::get('unidades/{unidade}/secoes/{secao}/ver', [SecaoController::class, 'ver'])->name('secoes.ver');
+Route::post('unidades/{unidade}/secoes/{secao}/transferir', [SecaoController::class, 'transferirItens'])->name('secoes.transferir');

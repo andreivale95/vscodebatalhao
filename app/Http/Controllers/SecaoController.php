@@ -3,14 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Secao;
 use App\Models\Unidade;
-
 use App\Models\Itens_estoque;
 
 class SecaoController extends Controller
 {
+    public function ver($unidadeId, $secaoId)
+    {
+        $secao = Secao::with(['unidade'])->findOrFail($secaoId);
+        $itens = Itens_estoque::where('fk_secao', $secaoId)->get();
+        $outrasSecoes = Secao::where('fk_unidade', $unidadeId)->where('id', '!=', $secaoId)->get();
+        return view('secoes.ver', compact('secao', 'itens', 'outrasSecoes', 'unidadeId'));
+    }
+
+    public function transferirItens(Request $request, $unidadeId, $secaoId)
+    {
+        $request->validate([
+            'item_id' => 'required|array',
+            'nova_secao' => 'required|integer',
+        ]);
+        foreach ($request->item_id as $itemId) {
+            $item = Itens_estoque::find($itemId);
+            if ($item) {
+                $item->fk_secao = $request->nova_secao;
+                $item->save();
+            }
+        }
+        return redirect()->route('secoes.ver', ['unidade' => $unidadeId, 'secao' => $secaoId])->with('success', 'Itens transferidos com sucesso!');
+    }
     public function index($unidadeId)
     {
         $unidade = Unidade::with('secoes')->findOrFail($unidadeId);
@@ -75,7 +96,7 @@ class SecaoController extends Controller
                 $item = Itens_estoque::find($itemId);
                 if ($item) {
                     $item->fk_secao = $secaoId;
-                    $item->quantidade = $quantidades[$idx];
+                    $item->quantidade += $quantidades[$idx]; // Soma à quantidade existente
                     $item->save();
                 }
             }
