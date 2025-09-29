@@ -9,6 +9,44 @@ use App\Models\Itens_estoque;
 
 class SecaoController extends Controller
 {
+    public function transferirLoteForm($unidadeId, $secaoId)
+    {
+        $secao = Secao::findOrFail($secaoId);
+        $itens = Itens_estoque::where('fk_secao', $secaoId)->get();
+        $outrasSecoes = Secao::where('fk_unidade', $unidadeId)->where('id', '!=', $secaoId)->get();
+        return view('secoes.transferir_lote', compact('secao', 'itens', 'outrasSecoes'));
+    }
+
+    public function transferirLote(Request $request, $unidadeId, $secaoId)
+    {
+        $request->validate([
+            'item_id' => 'required|array',
+            'nova_secao' => 'required|integer',
+        ]);
+        $quantidades = $request->input('quantidade_transferir', []);
+        foreach ($request->item_id as $itemId) {
+            $item = Itens_estoque::find($itemId);
+            $qtdTransferir = isset($quantidades[$itemId]) ? intval($quantidades[$itemId]) : 0;
+            if ($item && $qtdTransferir > 0 && $qtdTransferir <= $item->quantidade) {
+                $itemDestino = Itens_estoque::where('fk_secao', $request->nova_secao)
+                    ->where('fk_produto', $item->fk_produto)
+                    ->where('lote', $item->lote)
+                    ->first();
+                if ($itemDestino) {
+                    $itemDestino->quantidade += $qtdTransferir;
+                    $itemDestino->save();
+                } else {
+                    $novoItem = $item->replicate();
+                    $novoItem->fk_secao = $request->nova_secao;
+                    $novoItem->quantidade = $qtdTransferir;
+                    $novoItem->save();
+                }
+                $item->quantidade -= $qtdTransferir;
+                $item->save();
+            }
+        }
+        return redirect()->route('secoes.ver', ['unidade' => $unidadeId, 'secao' => $secaoId])->with('success', 'Itens transferidos com sucesso!');
+    }
     public function ver($unidadeId, $secaoId)
     {
         $secao = Secao::with(['unidade'])->findOrFail($secaoId);
@@ -23,10 +61,27 @@ class SecaoController extends Controller
             'item_id' => 'required|array',
             'nova_secao' => 'required|integer',
         ]);
+        $quantidades = $request->input('quantidade_transferir', []);
         foreach ($request->item_id as $itemId) {
             $item = Itens_estoque::find($itemId);
-            if ($item) {
-                $item->fk_secao = $request->nova_secao;
+            $qtdTransferir = isset($quantidades[$itemId]) ? intval($quantidades[$itemId]) : 0;
+            if ($item && $qtdTransferir > 0 && $qtdTransferir <= $item->quantidade) {
+                // Se já existe um item igual na seção destino, soma; senão, cria novo registro
+                $itemDestino = Itens_estoque::where('fk_secao', $request->nova_secao)
+                    ->where('fk_produto', $item->fk_produto)
+                    ->where('lote', $item->lote)
+                    ->first();
+                if ($itemDestino) {
+                    $itemDestino->quantidade += $qtdTransferir;
+                    $itemDestino->save();
+                } else {
+                    $novoItem = $item->replicate();
+                    $novoItem->fk_secao = $request->nova_secao;
+                    $novoItem->quantidade = $qtdTransferir;
+                    $novoItem->save();
+                }
+                // Atualiza quantidade na seção origem
+                $item->quantidade -= $qtdTransferir;
                 $item->save();
             }
         }

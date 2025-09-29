@@ -162,3 +162,5 @@ Route::get('unidades/{unidade}/secoes/{secao}/vincular-itens', [SecaoController:
 Route::post('unidades/{unidade}/secoes/{secao}/vincular-itens', [SecaoController::class, 'vincularItens'])->name('secoes.vincular_itens');
 Route::get('unidades/{unidade}/secoes/{secao}/ver', [SecaoController::class, 'ver'])->name('secoes.ver');
 Route::post('unidades/{unidade}/secoes/{secao}/transferir', [SecaoController::class, 'transferirItens'])->name('secoes.transferir');
+Route::get('unidades/{unidade}/secoes/{secao}/transferir-lote', [SecaoController::class, 'transferirLoteForm'])->name('secoes.transferir_lote_form');
+Route::post('unidades/{unidade}/secoes/{secao}/transferir-lote', [SecaoController::class, 'transferirLote'])->name('secoes.transferir_lote');
