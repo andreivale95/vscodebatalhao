@@ -15,12 +15,11 @@
             <form action="{{ route('estoque.listar') }}" method="get">
                 <div class="box box-primary">
                     <div class="box-header">
-                        <div class="row">
+                        <div class="row" style="align-items: flex-end;">
                             <div class="form-group has-feedback col-md-2">
                                 <label class="control-label">PRODUTO:</label>
                                 <input type="text" class="form-control" name="nome" value="{{ request()->nome }}">
                             </div>
-
                             <div class="form-group has-feedback col-md-2">
                                 <label class="control-label">CATEGORIA:</label>
                                 <select name="categoria" class="form-control">
@@ -33,33 +32,38 @@
                                     @endforeach
                                 </select>
                             </div>
-
-                            <div class="form-group has-feedback col-md-2">
+                            <div class="form-group has-feedback col-md-2"
+                                style="display: flex; flex-direction: column; justify-content: flex-end;">
                                 <label class="control-label">Estoque:</label>
-                                <select name="unidade" class="form-control">
-                                    <option value="">Selecione</option>
-                                    @foreach ($unidades as $unidade)
-                                        <option value="{{ $unidade->id }}"
-                                            {{ request()->unidade == $unidade->id ? 'selected' : '' }}>
-                                            {{ $unidade->nome }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div style="display: flex; gap: 8px;">
+                                    <select name="unidade" class="form-control" style="width: 70%;">
+                                        <option value="">Selecione</option>
+                                        @foreach ($unidades as $unidade)
+                                            <option value="{{ $unidade->id }}"
+                                                {{ request()->unidade == $unidade->id ? 'selected' : '' }}>
+                                                {{ $unidade->nome }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <button class="btn btn-primary" type="submit"
+                                        style="height: 38px; align-self: flex-end;">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
                             </div>
-
-                            <div class="form-group has-feedback col-md-1 pull-right">
+                            <div class="form-group has-feedback col-md-3"
+                                style="display: flex; flex-direction: column; justify-content: flex-end;">
                                 <label class="control-label">&nbsp;</label>
-                                <button class="btn btn-primary form-control">
-                                    <i class="fa fa-search"></i> Pesquisar
-                                </button>
-                            </div>
-
-                            <!-- Botão para inserir novo produto -->
-                            <div class="form-group has-feedback col-md-2 pull-right">
-                                <label class="control-label">&nbsp;</label>
-                                <a href="{{ route('produtoinserir.form') }}" class="btn btn-success form-control">
-                                    <i class="fa fa-plus"></i> Inserir Produto
-                                </a>
+                                <div style="display: flex; gap: 8px;">
+                                    <a href="{{ route('produtoinserir.form') }}" class="btn btn-success"
+                                        style="height: 38px;">
+                                        <i class="fa fa-plus"></i> Inserir Produto
+                                    </a>
+                                    <button type="button" class="btn btn-warning" id="open-modal-saida"
+                                        style="height: 38px;" disabled>
+                                        <i class="fa fa-share-square"></i> Saída Múltipla
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -209,13 +213,10 @@
                       {{ $itens_estoque->links() }}
                 </div>
 
-                <div class="box-footer">
-                    <button type="button" class="btn btn-success" id="open-modal-saida" disabled>
-                        <i class="fa fa-check"></i> Saída Múltipla
-                    </button>
-                </div>
+                <!-- Removido botão duplicado de saída múltipla -->
             </div>
 
+            {{--
             <!-- Modal de Saída Múltipla -->
             <div class="modal fade" id="modalSaidaMultipla" tabindex="-1" role="dialog"
                 aria-labelledby="modalSaidaMultiplaLabel" aria-hidden="true">
@@ -242,10 +243,6 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="data_saida">Data de Saída:</label>
-                                    <input type="datetime-local" name="data_saida" class="form-control" required>
-                                </div>
-                                <div class="form-group">
                                     <label for="observacao">Observação:</label>
                                     <textarea name="observacao" class="form-control" rows="3" placeholder="Observações sobre a saída (opcional)"></textarea>
                                 </div>
@@ -258,6 +255,7 @@
                     </div>
                 </div>
             </div>
+            --}}
         </section>
     </div>
 
