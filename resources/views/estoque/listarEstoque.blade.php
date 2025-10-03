@@ -32,6 +32,10 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group has-feedback col-md-2">
+                                <label class="control-label">PATRIMÔNIO:</label>
+                                <input type="text" class="form-control" name="patrimonio" value="{{ request()->patrimonio }}" placeholder="Número do patrimônio">
+                            </div>
                             <div class="form-group has-feedback col-md-2"
                                 style="display: flex; flex-direction: column; justify-content: flex-end;">
                                 <label class="control-label">Estoque:</label>
@@ -77,6 +81,7 @@
                             <tr>
                                 <!-- Coluna de seleção removida -->
                                 <th>Produto</th>
+                                <th>Patrimônio</th>
                                 <th>Quantidade</th>
                                 <th>Unidade</th>
                                 <th>Categoria</th>
@@ -100,6 +105,7 @@
                                             {{ optional($estoque->produto()->first()?->tamanho()->first())->tamanho ?? 'Tamanho Único' }}
                                         </a>
                                     </td>
+                                    <td>{{ $estoque->produto()->first()->patrimonio ?? '-' }}</td>
                                     <td>
                                         @if ($estoque->quantidade <= 0)
                                             <span class="text-danger">Produto esgotado</span>

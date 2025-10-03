@@ -41,6 +41,11 @@ class EstoqueController extends Controller
                         $q->where('nome', 'like', '%' . $request->get('nome') . '%');
                     });
                 })
+                ->when(filled($request->get('patrimonio')), function (Builder $query) use ($request) {
+                    return $query->whereHas('produto', function ($q) use ($request) {
+                        $q->where('patrimonio', 'like', '%' . $request->get('patrimonio') . '%');
+                    });
+                })
                 ->when(filled($request->get('categoria')), function (Builder $query) use ($request) {
                     return $query->whereHas('produto.categoria', function ($q) use ($request) {
                         $q->where('id', $request->get('categoria'));
