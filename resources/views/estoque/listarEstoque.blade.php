@@ -83,7 +83,6 @@
                                 <th>Estoque</th>
                                 <th>Valor Médio</th>
                                 <th>Subtotal</th>
-                                <th>Ações</th>
                                 <th>Transferência</th>
                             </tr>
                         </thead>
@@ -114,10 +113,14 @@
                                     <td>R$ {{ number_format($valorUnitario, 2, ',', '.') }}</td>
                                     <td>R$ {{ number_format($subtotal, 2, ',', '.') }}</td>
                                     <td>
-                                        <span class="text-muted">Ação desativada</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-muted">Ação desativada</span>
+                                        @if (Auth::user()->fk_unidade == $estoque->unidade()->first()->id)
+                                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                                data-target="#modalTransferencia{{ $estoque->id }}">
+                                                <i class="fa fa-exchange-alt"></i>
+                                            </button>
+                                        @else
+                                            <span class="text-muted">Acesso restrito</span>
+                                        @endif
                                     </td>
                                 </tr>
 
